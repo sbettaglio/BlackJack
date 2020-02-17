@@ -508,12 +508,7 @@ namespace BlackJack
               Console.WriteLine($"Dealer drew {dealerHand.Last().DisplayCard()}");
               dealerTotal += dealerHand.Last().GetCardValue();
               Console.WriteLine($"With a current total of {dealerTotal}");
-              // Console.WriteLine("Dealer is holding:");
-              // for (var i = 0; i < dealerHand.Count; i++)
-              // {
-              //   Console.WriteLine($"{dealerHand[i].DisplayCard()}");
-              // }
-              // Console.WriteLine($"Dealer's current total is: {dealerTotal}");
+              
             }
             if (dealerTotal >= 17)
             {
