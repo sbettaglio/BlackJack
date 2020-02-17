@@ -8,278 +8,594 @@ namespace BlackJack
   {
     static void Main(string[] args)
     {
-      bool play = true;
+      var play = true;
       while (play)
       {
 
-
-        Console.WriteLine("Do you want to play BlackJack? Press enter if yes.");
-        var playBlackJack = Console.ReadLine().ToLower();
-        if (playBlackJack == "")
+        //The game should be played with a standard deck of playing cards 52
+        var suits = new List<string>() { "spades", "clubs", "hearts", "diamonds" };
+        var ranks = new List<string>() { "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace" };
+        var deck = new List<Card>();
+        for (var i = 0; i < suits.Count; i++)
         {
-          Console.WriteLine("Let's play!");
-          //The game should be played with a standard deck of playing cards 52
-          var suits = new List<string>() { "spades", "clubs", "hearts", "diamonds" };
-          var ranks = new List<string>() { "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace" };
-          var deck = new List<Card>();
-          for (var i = 0; i < suits.Count; i++)
+          for (var j = 0; j < ranks.Count; j++)
           {
-            for (var j = 0; j < ranks.Count; j++)
-            {
-              var card = new Card();
-              card.Suit = suits[i];
-              card.Rank = ranks[j];
-              deck.Add(card);
-            }
+            var card = new Card();
+            card.Suit = suits[i];
+            card.Rank = ranks[j];
+            deck.Add(card);
           }
-          //The house should be dealt with two cards, hidden from the player until the house reveals its hand.
-          Random rnd = new Random();
-          for (var i = deck.Count - 1; i >= 0; i--)
-          {
-            var j = rnd.Next(deck.Count);
-            var swap = deck[i];
-            deck[i] = deck[j];
-            deck[j] = swap;
-          }
-          var dealerHand = new List<Card>();
-          var playerHand = new List<Card>();
-          var cardIndex = 0;
-          cardIndex++;
+        }
+        //The house should be dealt with two cards, hidden from the player until the house reveals its hand.
+        Random rnd = new Random();
+        for (var i = deck.Count - 1; i >= 0; i--)
+        {
+          var j = rnd.Next(deck.Count);
+          var swap = deck[i];
+          deck[i] = deck[j];
+          deck[j] = swap;
+        }
+        var dealerHand = new List<Card>();
+        var playerHand = new List<Card>();
+        var cardIndex = 0;
+        cardIndex++;
 
 
-          dealerHand.Add(deck[0]);
-          dealerHand.Add(deck[1]);
-          Console.WriteLine($"Dealer open card is: {dealerHand[1].DisplayCard()}");
-          //The player should be dealt with two cards, visible to the player
-          playerHand.Add(deck[2]);
-          playerHand.Add(deck[3]);
-          deck.RemoveAt(0);
-          deck.RemoveAt(1);
-          deck.RemoveAt(2);
-          deck.RemoveAt(3);
-          Console.WriteLine($"The player cards are {playerHand[0].DisplayCard()} and {playerHand[1].DisplayCard()}");
-          var playerTotal = (playerHand[0].GetCardValue() + playerHand[1].GetCardValue());
-          Console.WriteLine($"Player's total is {playerTotal} ");
-          if (playerTotal == 21)
+        dealerHand.Add(deck[0]);
+        dealerHand.Add(deck[1]);
+        // for (var i = 0; i < dealerHand.Count; i++)
+        // {
+        //   Console.WriteLine("Dealer is holding");
+        //   Console.WriteLine($"{dealerHand[i].DisplayCard()}");
+        // }
+
+        //The player should be dealt with two cards, visible to the player
+        playerHand.Add(deck[2]);
+        playerHand.Add(deck[3]);
+        deck.RemoveAt(0);
+        deck.RemoveAt(1);
+        deck.RemoveAt(2);
+        deck.RemoveAt(3);
+        Console.WriteLine("Player is Holding.");
+        for (var i = 0; i < playerHand.Count; i++)
+        {
+          Console.WriteLine($"{playerHand[i].DisplayCard()}");
+        }
+        var playerTotal = playerHand[0].GetCardValue() + playerHand[1].GetCardValue();
+        var dealerTotal = dealerHand[0].GetCardValue() + dealerHand[1].GetCardValue();
+        Console.WriteLine($"Player's total is {playerTotal}");
+
+        if (playerTotal == 21)
+        {
+          Console.WriteLine("BlackJack! Player wins!");
+          Console.WriteLine("Do you want to play again? (YES) or (NO)");
+          var playAgain = Console.ReadLine().ToLower();
+          if (playAgain == "no")
           {
-            Console.WriteLine("BlackJack! Player wins!");
+            Console.WriteLine("Thanks for playing!");
             play = false;
           }
-          else if (playerTotal > 21)
+          else
           {
-
-            Console.WriteLine($"Player drew {playerHand.Last().DisplayCard()}. Player's new total is {playerTotal}. Bust, dealer wins!");
+            play = true;
           }
-          var dealerTotal = (dealerHand[0].GetCardValue() + dealerHand[1].GetCardValue());
-          Console.WriteLine($"Dealer is showing is {dealerHand[1].DisplayCard()}, with a showing count of {dealerHand.Last().GetCardValue()} ");
 
-          //The player should have a chance to hit (i.e., be dealt another card) until they decide to stop or they bust (i.e., their total is over 21 ).
-          Console.WriteLine("(STAY) or (HIT)");
-          var reveal = Console.ReadLine().ToLower();
-          if (reveal == "hit")
+        }
+        else if (playerTotal > 21)
+        {
+          Console.WriteLine("Bust! Players loses!");
+          Console.WriteLine("Do you want to play again? (YES) or (NO)");
+          var playAgain = Console.ReadLine().ToLower();
+          if (playAgain == "no")
+          {
+            Console.WriteLine("Thanks for playing!");
+            play = false;
+          }
+          else
+          {
+            play = true;
+          }
+        }
+        //The player should have a chance to hit (i.e., be dealt another card) until they decide to stop or they bust (i.e., their total is over 21 ).
+        else
+        {
+          Console.WriteLine("Do you want to (HIT) or (STAY)?");
+          var nextCard = Console.ReadLine().ToLower();
+          if (nextCard == "hit")
           {
             playerHand.Add(deck[0]);
             deck.RemoveAt(0);
-            playerTotal = (playerTotal + playerHand.Last().GetCardValue());
-            if (playerTotal > 21)
+            playerTotal += playerHand.Last().GetCardValue();
+            Console.WriteLine($"Player drew {playerHand.Last().DisplayCard()}");
+            Console.WriteLine("Player is now holding:");
+            for (var i = 0; i < playerHand.Count; i++)
             {
-
-              Console.WriteLine($"Player drew {playerHand.Last().DisplayCard()}. Player's new total is {playerTotal}. Bust, dealer wins!");
+              Console.WriteLine($"{playerHand[i].DisplayCard()}");
             }
-
-
-            else if (reveal == "hit")
+            Console.WriteLine($"With a current total of {playerTotal}");
+            if (playerTotal == 21)
             {
-              // playerHand.Add(deck[0]);
-              // deck.RemoveAt(0);
-              // playerTotal = playerTotal + playerHand.Last().GetCardValue();
-              // Console.WriteLine($"Player drew a {playerHand.Last().DisplayCard()} player's new total is {playerTotal}. Dealer is showing is {dealerHand.Last().DisplayCard()}, with a showing count of {dealerHand.Last().DisplayCard()} ");
-              // if (playerTotal > 21)
-              // {
-              //   Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Bust. Dealer wins!");
-              // }
-              bool over = true;
-              over = (playerTotal < 21);
-              while (over)
+              while (dealerTotal < 17)
+              {
+                Console.WriteLine("Dealer is holding:");
+                for (var i = 0; i < dealerHand.Count; i++)
+                {
+                  Console.WriteLine($"{dealerHand[i].DisplayCard()}");
+                }
+                Console.WriteLine($"Dealer's current total is: {dealerTotal}");
+                dealerHand.Add(deck[0]);
+                deck.RemoveAt(0);
+                dealerTotal += dealerHand.Last().GetCardValue();
+                Console.WriteLine($"Dealer drew {dealerHand.Last().DisplayCard()}");
+                Console.WriteLine($"With a current total of {dealerTotal}");
+              }
+              if (dealerTotal > 21)
+              {
+                Console.WriteLine($"Dealer has a total of {dealerTotal} and player has a total of {playerTotal}. Player wins! ");
+
+                Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                var playAgain = Console.ReadLine().ToLower();
+                if (playAgain == "no")
+                {
+                  Console.WriteLine("Thanks for playing!");
+                  play = false;
+                }
+              }
+              else if (dealerTotal == 21)
+              {
+                Console.WriteLine($"Dealer has a total of {dealerTotal} and player has a total of {playerTotal}. Push, it's a tie!");
+                Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                var playAgain = Console.ReadLine().ToLower();
+                if (playAgain == "no")
+                {
+                  Console.WriteLine("Thanks for playing!");
+                  play = false;
+                }
+              }
+            }
+            else if (playerTotal > 21)
+            {
+              Console.WriteLine("Bust! Player went over 21!");
+              Console.WriteLine("Do you want to play again? (YES) or (NO)");
+              var playAgain = Console.ReadLine().ToLower();
+              if (playAgain == "no")
+              {
+                Console.WriteLine("Thanks for playing!");
+                play = false;
+              }
+            }
+            bool bust = true;
+            while (playerTotal < 21 && bust)
+            {
+              Console.WriteLine("Do you want to (STAY) or (HIT)?");
+              nextCard = Console.ReadLine().ToLower();
+              if (nextCard == "stay")
+              {
+                Console.WriteLine($"Player stays at a count of {playerTotal}");
+                //bool total = true;
+                while (dealerTotal < 17)
+                {
+                  Console.WriteLine("Dealer is holding:");
+                  for (var i = 0; i < dealerHand.Count; i++)
+                  {
+                    Console.WriteLine($"{dealerHand[i].DisplayCard()}");
+                  }
+                  Console.WriteLine($"Dealer's current total is: {dealerTotal}");
+                  dealerHand.Add(deck[0]);
+                  deck.RemoveAt(0);
+                  dealerTotal += dealerHand.Last().GetCardValue();
+                  Console.WriteLine($"Dealer drew {dealerHand.Last().DisplayCard()}");
+                  Console.WriteLine($"With a current total of {dealerTotal}");
+
+                }
+                if (dealerTotal >= 17)
+                {
+                  if (dealerTotal > playerTotal && dealerTotal <= 21)
+                  {
+                    Console.WriteLine($"Dealer has a total of {dealerTotal} and player has total of {playerTotal}. Dealer wins!");
+
+
+                    Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                    var playAgain = Console.ReadLine().ToLower();
+                    if (playAgain == "no")
+                    {
+                      Console.WriteLine("Thanks for playing!");
+                      play = false;
+                      bust = false;
+                    }
+                    else
+                    {
+                      bust = false;
+                    }
+
+                  }
+                  else if (dealerTotal < playerTotal && dealerTotal <= 21)
+                  {
+                    Console.WriteLine($"Dealer has a total of {dealerTotal} and player has a total of {playerTotal}. Player wins! ");
+
+                    //bust = false;
+                    Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                    var playAgain = Console.ReadLine().ToLower();
+                    if (playAgain == "no")
+                    {
+                      Console.WriteLine("Thanks for playing!");
+                      play = false;
+                      bust = false;
+                    }
+                    else
+                    {
+                      bust = false;
+                    }
+
+                  }
+                  else if (dealerTotal == playerTotal)
+                  {
+                    Console.WriteLine($"Dealer has a total of {dealerTotal} and player has a total of {playerTotal}. Push, it's a a tie!");
+
+                    Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                    var playAgain = Console.ReadLine().ToLower();
+                    if (playAgain == "no")
+                    {
+                      Console.WriteLine("Thanks for playing!");
+                      play = false;
+
+                      bust = false;
+                    }
+                    else
+                    {
+                      bust = false;
+                    }
+
+                  }
+                  else if (dealerTotal > 21)
+                  {
+                    Console.WriteLine($"Dealer has a total of {dealerTotal}. Bust, dealer went over 21!");
+
+                    Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                    var playAgain = Console.ReadLine().ToLower();
+                    if (playAgain == "no")
+                    {
+                      Console.WriteLine("Thanks for playing!");
+                      play = false;
+                      bust = false;
+                    }
+                    else
+                    {
+                      bust = false;
+                    }
+
+                  }
+                  else if (playerTotal > 21)
+                  {
+                    Console.WriteLine($"Player has a total of {playerTotal}. Bust, player went over 21!");
+
+                    //bust = false;
+                    Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                    var playAgain = Console.ReadLine().ToLower();
+                    if (playAgain == "no")
+                    {
+                      Console.WriteLine("Thanks for playing!");
+                      play = false;
+                      bust = false;
+                    }
+                    else
+                    {
+                      bust = false;
+                    }
+                  }
+
+                }
+              }
+              else if (nextCard == "hit")
               {
                 playerHand.Add(deck[0]);
                 deck.RemoveAt(0);
-                playerTotal = (playerTotal + playerHand.Last().GetCardValue());
-                Console.WriteLine($"Player drew {playerHand.Last().DisplayCard()}. Player's new total is {playerTotal}. Dealer is showing is {dealerHand.Last().DisplayCard()}, with a showing count of {dealerHand.Last().GetCardValue()}  ");
-
-                Console.WriteLine("(STAY) or (Hit)?");
-                reveal = Console.ReadLine().ToLower();
-
-              }
-              if (playerTotal == 21)
-              {
-                if (playerTotal == 21 && dealerTotal == 21)
+                playerTotal += playerHand.Last().GetCardValue();
+                Console.WriteLine($"Player drew {playerHand.Last().DisplayCard()}");
+                Console.WriteLine("Player is now holding:");
+                for (var i = 0; i < playerHand.Count; i++)
                 {
-                  Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Push. It's a tie!");
+                  Console.WriteLine($"{playerHand[i].DisplayCard()}");
                 }
-
-              }
-              else if (reveal == "stay" && playerTotal > dealerTotal)
-              {
-                Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Push, its a tie!");
-              }
-              else if (reveal == "stay" && playerTotal < dealerTotal)
-              {
-                Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Dealer wins!");
-              }
-              if (dealerTotal > 17)
-              {
-                if (dealerTotal == playerTotal)
+                Console.WriteLine($"With a current total of {playerTotal}");
+                if (playerTotal > 21)
                 {
-                  Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}. Push. It's a tie!");
-                }
-                else if (dealerTotal > playerTotal && dealerTotal <= 21)
-                {
-                  Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Dealer wins!");
-                }
-                else if (dealerTotal > playerTotal && dealerTotal > 21)
-                {
-                  Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}. Dealer bust. Player wins!");
-                }
-                else if (dealerTotal < playerTotal)
-                {
-                  Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Player wins!");
-                }
-
-              }
-              else if (playerTotal >= 21)
-              {
-
-                if (playerTotal == 21 && dealerTotal < 21)
-                {
-                  Console.WriteLine($"Players total is {playerTotal} ");
-                  Console.WriteLine($"Dealer reveals {dealerHand[0].DisplayCard()}");
-                  Console.WriteLine($"Dealer's hand is {dealerHand[0].DisplayCard()} and {dealerHand[1].DisplayCard()} with a total of {dealerTotal} ");
-                  while (dealerTotal <= 16)
+                  Console.WriteLine("Bust!. Player went over 21!");
+                  //bust = false;
+                  Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                  var playAgain = Console.ReadLine().ToLower();
+                  if (playAgain == "no")
                   {
-                    dealerHand.Add(deck[0]);
-                    deck.RemoveAt(0);
-                    dealerTotal = dealerTotal + dealerHand.Last().GetCardValue();
-                    Console.WriteLine($"Dealer drew {dealerHand.Last().DisplayCard()}. Dealer's total is {dealerTotal} ");
-                  }
-                  if (dealerTotal > 17)
-                  {
-                    if (dealerTotal == playerTotal)
-                    {
-                      Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}. Push. It's a tie!");
-                    }
-                    else if (dealerTotal > playerTotal && dealerTotal <= 21)
-                    {
-                      Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Dealer wins!");
-                    }
-                    else if (dealerTotal > playerTotal && dealerTotal > 21)
-                    {
-                      Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}. Dealer bust. Player wins!");
-                    }
-                    else if (dealerTotal < playerTotal)
-                    {
-                      Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Player wins!");
-                    }
-                  }
-                  else if (dealerTotal == 17)
-                  {
-                    if (dealerTotal > playerTotal)
-                    {
-                      Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Dealer wins!");
-                    }
-                    else if (dealerTotal == playerTotal)
-                    {
-                      Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}. Push. It's a tie!");
-                    }
-                    else if (dealerTotal < playerTotal)
-                    {
-                      Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Player wins!");
-                    }
-                    else if (playerTotal > 21)
-                    {
-                      Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Bust. Dealer wins!");
-                    }
-                    else if (reveal == "stay" && playerTotal > dealerTotal)
-                    {
-                      Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Push, its a tie!");
-                    }
-                    else if (reveal == "stay" && playerTotal < dealerTotal)
-                    {
-                      Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Dealer wins!");
-                    }
+                    Console.WriteLine("Thanks for playing!");
+                    bust = false;
 
+                    play = false;
                   }
+                  else
+                  {
+                    bust = false;
+                  }
+                  Console.WriteLine("Do you want to (STAY) or (HIT)?");
+                  nextCard = Console.ReadLine().ToLower();
+                  if (nextCard == "stay")
+                  {
+                    Console.WriteLine($"Player stays at a count of {playerTotal}");
+
+                    //bool total = true;
+                    while (dealerTotal < 17)
+                    {
+                      Console.WriteLine("Dealer is holding:");
+                      for (var i = 0; i < dealerHand.Count; i++)
+                      {
+                        Console.WriteLine($"{dealerHand[i].DisplayCard()}");
+                      }
+                      Console.WriteLine($"Dealer's current total is: {dealerTotal}");
+                      deck.RemoveAt(0);
+                      dealerHand.Add(deck[0]);
+                      Console.WriteLine($"Dealer drew {dealerHand.Last().DisplayCard()}");
+                      dealerTotal += dealerHand.Last().GetCardValue();
+                      Console.WriteLine($"With a current total of {dealerTotal}");
+                      if (dealerTotal >= 17)
+                      {
+                        if (dealerTotal > playerTotal && dealerTotal <= 21)
+                        {
+                          Console.WriteLine($"Dealer has a total of {dealerTotal} and player has total of {playerTotal}. Dealer wins!");
+
+                          Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                          playAgain = Console.ReadLine().ToLower();
+                          if (playAgain == "no")
+                          {
+                            Console.WriteLine("Thanks for playing!");
+                            play = false;
+                            bust = false;
+                          }
+                          else
+                          {
+                            bust = false;
+                          }
+                        }
+                        else if (dealerTotal < playerTotal && playerTotal <= 21)
+                        {
+                          Console.WriteLine($"Dealer has a total of {dealerTotal} and player has a total of {playerTotal}. Player wins! ");
+
+                          Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                          playAgain = Console.ReadLine().ToLower();
+                          if (playAgain == "no")
+                          {
+                            Console.WriteLine("Thanks for playing!");
+                            play = false;
+                            bust = false;
+                          }
+                          else
+                          {
+                            bust = false;
+                          }
+                        }
+                        else if (dealerTotal == playerTotal)
+                        {
+                          Console.WriteLine($"Dealer has a total of {dealerTotal} and player has a total of {playerTotal}. Push, it's a a tie!");
+
+                          Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                          playAgain = Console.ReadLine().ToLower();
+                          if (playAgain == "no")
+                          {
+                            Console.WriteLine("Thanks for playing!");
+                            play = false;
+                            bust = false;
+                          }
+                          else
+                          {
+                            bust = false;
+                          }
+                        }
+                        else if (dealerTotal > 21)
+                        {
+                          Console.WriteLine($"Dealer has a total of {dealerTotal}. Bust, dealer went over 21!");
+
+                          Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                          playAgain = Console.ReadLine().ToLower();
+                          if (playAgain == "no")
+                          {
+                            Console.WriteLine("Thanks for playing!");
+                            play = false;
+                            bust = false;
+                          }
+                          else
+                          {
+                            bust = false;
+                          }
+                        }
+                        else if (playerTotal > 21)
+                        {
+                          Console.WriteLine($"Player has a total of {playerTotal}. Bust, player went over 21!");
+
+                          Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                          playAgain = Console.ReadLine().ToLower();
+                          if (playAgain == "no")
+                          {
+                            Console.WriteLine("Thanks for playing!");
+                            play = false;
+                            bust = false;
+                          }
+                          else
+                          {
+                            bust = false;
+                          }
+                        }
+                      }
+
+                    }
+                    if (dealerTotal >= 17)
+                    {
+                      if (dealerTotal > playerTotal && dealerTotal <= 21)
+                      {
+                        Console.WriteLine($"Dealer has a total of {dealerTotal} and player has total of {playerTotal}. Dealer wins!");
+                        Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                        playAgain = Console.ReadLine().ToLower();
+                        if (playAgain == "no")
+                        {
+                          Console.WriteLine("Thanks for playing!");
+                          play = false;
+                        }
+                      }
+                      else if (dealerTotal < playerTotal && playerTotal <= 21)
+                      {
+                        Console.WriteLine($"Dealer has a total of {dealerTotal} and player has a total of {playerTotal}. Player wins! ");
+                        Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                        playAgain = Console.ReadLine().ToLower();
+                        if (playAgain == "no")
+                        {
+                          Console.WriteLine("Thanks for playing!");
+                          play = false;
+                        }
+                      }
+                      else if (dealerTotal == playerTotal)
+                      {
+                        Console.WriteLine($"Dealer has a total of {dealerTotal} and player has a total of {playerTotal}. Push, it's a a tie!");
+                        Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                        playAgain = Console.ReadLine().ToLower();
+                        if (playAgain == "no")
+                        {
+                          Console.WriteLine("Thanks for playing!");
+                          play = false;
+                        }
+                      }
+                      else if (dealerTotal > 21)
+                      {
+                        Console.WriteLine($"Dealer has a total of {dealerTotal}. Bust, dealer went over 21!");
+                        Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                        playAgain = Console.ReadLine().ToLower();
+                        if (playAgain == "no")
+                        {
+                          Console.WriteLine("Thanks for playing!");
+                          play = false;
+                        }
+                      }
+                      else if (playerTotal > 21)
+                      {
+                        Console.WriteLine($"Player has a total of {playerTotal}. Bust, player Went over 21!");
+                        Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                        playAgain = Console.ReadLine().ToLower();
+                        if (playAgain == "no")
+                        {
+                          Console.WriteLine("Thanks for playing!");
+                          play = false;
+                        }
+                      }
+                    }
+                  }
+
+
                 }
+
               }
             }
           }
-
-
-
-
-          else if (reveal == "stay")
+          else if (nextCard == "stay")
           {
-            Console.WriteLine($"Dealer reveals {dealerHand[0].DisplayCard()}");
-            Console.WriteLine($"Dealer's hand is {dealerHand[0].DisplayCard()} and {dealerHand[1].DisplayCard()} with a total of {dealerTotal} ");
+            Console.WriteLine($"Player stays at a count of {playerTotal}");
             while (dealerTotal <= 16)
             {
-              dealerHand.Add(deck[0]);
-              deck.RemoveAt(0);
-              dealerTotal = dealerTotal + dealerHand.Last().GetCardValue();
-              Console.WriteLine($"Dealer drew {dealerHand.Last().DisplayCard()}. Dealer's total is {dealerTotal} ");
+              Console.WriteLine("Dealer is holding:");
+              for (var i = 0; i < dealerHand.Count; i++)
+              {
+                Console.WriteLine($"{dealerHand[i].DisplayCard()}");
+              }
+              Console.WriteLine($"Dealer's current total is: {dealerTotal}");
+              dealerHand.Add(deck[1]);
+              deck.RemoveAt(1);
+
+              Console.WriteLine($"Dealer drew {dealerHand.Last().DisplayCard()}");
+              dealerTotal += dealerHand.Last().GetCardValue();
+              Console.WriteLine($"With a current total of {dealerTotal}");
+              // Console.WriteLine("Dealer is holding:");
+              // for (var i = 0; i < dealerHand.Count; i++)
+              // {
+              //   Console.WriteLine($"{dealerHand[i].DisplayCard()}");
+              // }
+              // Console.WriteLine($"Dealer's current total is: {dealerTotal}");
             }
-            if (dealerTotal > 17)
+            if (dealerTotal >= 17)
             {
-              if (dealerTotal == playerTotal)
+              if (dealerTotal > playerTotal && dealerTotal <= 21)
               {
-                Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}. Push. It's a tie!");
-              }
-              else if (dealerTotal > playerTotal && dealerTotal <= 21)
-              {
-                Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Dealer wins!");
-              }
-              else if (dealerTotal > playerTotal && dealerTotal > 21)
-              {
-                Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}. Dealer bust. Player wins!");
+                Console.WriteLine("Dealer is holding:");
+                for (var i = 0; i < dealerHand.Count; i++)
+                {
+                  Console.WriteLine($"{dealerHand[i].DisplayCard()}");
+                }
+                Console.WriteLine($"Dealer has a total of {dealerTotal} and player has total of {playerTotal}. Dealer wins!");
+                Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                var playAgain = Console.ReadLine().ToLower();
+                if (playAgain == "no")
+                {
+                  Console.WriteLine("Thanks for playing!");
+                  play = false;
+                }
               }
               else if (dealerTotal < playerTotal)
               {
-                Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Player wins!");
-              }
-            }
-            else if (dealerTotal == 17)
-            {
-              if (dealerTotal > playerTotal)
-              {
-                Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Dealer wins!");
+                Console.WriteLine("Dealer is holding:");
+                for (var i = 0; i < dealerHand.Count; i++)
+                {
+                  Console.WriteLine($"{dealerHand[i].DisplayCard()}");
+                }
+                Console.WriteLine($"Dealer has a total of {dealerTotal} and player has a total of {playerTotal}. Player wins! ");
+                Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                var playAgain = Console.ReadLine().ToLower();
+                if (playAgain == "no")
+                {
+                  Console.WriteLine("Thanks for playing!");
+                  play = false;
+                }
               }
               else if (dealerTotal == playerTotal)
               {
-                Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}. Push. It's a tie!");
+                Console.WriteLine("Dealer is holding:");
+                for (var i = 0; i < dealerHand.Count; i++)
+                {
+                  Console.WriteLine($"{dealerHand[i].DisplayCard()}");
+                }
+                Console.WriteLine($"Dealer has a total of {dealerTotal} and player has a total of {playerTotal}. Push, it's a a tie!");
+                Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                var playAgain = Console.ReadLine().ToLower();
+                if (playAgain == "no")
+                {
+                  Console.WriteLine("Thanks for playing!");
+                  play = false;
+                }
               }
-              else if (dealerTotal < playerTotal)
+              else if (dealerTotal > 21)
               {
-                Console.WriteLine($"Dealer's total is {dealerTotal} and the player's total is {playerTotal}.Player wins!");
+                Console.WriteLine("Dealer is holding:");
+                for (var i = 0; i < dealerHand.Count; i++)
+                {
+                  Console.WriteLine($"{dealerHand[i].DisplayCard()}");
+                }
+                Console.WriteLine($"Dealer has a total of {dealerTotal}. Bust, dealer went over 21!");
+                Console.WriteLine("Do you want to play again? (YES) or (NO)");
+                var playAgain = Console.ReadLine().ToLower();
+                if (playAgain == "no")
+                {
+                  Console.WriteLine("Thanks for playing!");
+                  play = false;
+                }
               }
-            }
 
+            }
 
           }
         }
-        else
-        {
-          play = false;
-        }
-
-
 
       }
-      Console.WriteLine("See you later!");
-
 
     }
-
   }
 }
+
+
+
+
+
 
 
