@@ -1,8 +1,0 @@
-namespace BlackJack
-{
-  class ShowPlayerHand
-  {
-
-  }
-
-}

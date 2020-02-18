@@ -34,6 +34,10 @@ namespace BlackJack
         return int.Parse(Rank);
       }
     }
+    public string IsAce()
+    {
+      return $"{Rank}";
+    }
 
 
 
