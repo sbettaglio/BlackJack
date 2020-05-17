@@ -6,26 +6,37 @@ namespace BlackJack
 {
   class Program
   {
+
+    public static List<Card> GenerateDeck()
+    {
+      var suits = new List<string>() { "spades", "clubs", "hearts", "diamonds" };
+      var ranks = new List<string>() { "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace" };
+      var deck = new List<Card>();
+      foreach (var suit in suits)
+      {
+        foreach (var rank in ranks)
+        {
+          var card = new Card();
+          card.Suit = suit;
+          card.Rank = rank;
+          deck.Add(card);
+        }
+      }
+      return deck;
+    }
+
+
+
     static void Main(string[] args)
     {
+
       var play = true;
       while (play)
       {
 
         //The game should be played with a standard deck of playing cards 52
-        var suits = new List<string>() { "spades", "clubs", "hearts", "diamonds" };
-        var ranks = new List<string>() { "2", "3", "4", "5", "6", "7", "8", "9", "10", "jack", "queen", "king", "ace" };
-        var deck = new List<Card>();
-        for (var i = 0; i < suits.Count; i++)
-        {
-          for (var j = 0; j < ranks.Count; j++)
-          {
-            var card = new Card();
-            card.Suit = suits[i];
-            card.Rank = ranks[j];
-            deck.Add(card);
-          }
-        }
+        var deck = GenerateDeck();
+
         //The house should be dealt with two cards, hidden from the player until the house reveals its hand.
         Random rnd = new Random();
         for (var i = deck.Count - 1; i >= 0; i--)
