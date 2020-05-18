@@ -11,6 +11,7 @@ namespace BlackJack
     public string Suit { get; set; }
     // color
     public string ColorOfTheCard { get; set; }
+    public int Value { get; set; }
 
 
     // Method
