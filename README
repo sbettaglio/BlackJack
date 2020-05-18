@@ -16,19 +16,19 @@ General Rules:
   they decide to stop or they bust (i.e. their total is over 21). At which
   point they lose regardless of the dealer's hand.
 
-  [] When the player stands, the house reveals its hand and hits (i.e. draw
+  [x] When the player stands, the house reveals its hand and hits (i.e. draw
   cards) until they have 17 or more.
 
-  [] If dealer goes over 21 the dealer loses.
+  [x] If dealer goes over 21 the dealer loses.
 
   [x] The player should have two choices: "Hit" and "Stand."
 
   [x] Consider Aces to be worth 11, never 1.
 
-  [] The app should display the winner. For this mode, the winner is who is
+  [x] The app should display the winner. For this mode, the winner is who is
   closer to a blackjack (21) without going over.
 
-  [] There should be an option to play again; this should reset the hands and
+  [x] There should be an option to play again; this should reset the hands and
   reshuffle the deck.
 
 Adventure Mode

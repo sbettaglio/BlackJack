@@ -21,7 +21,6 @@ namespace BlackJack
       playerTotal = playerHand.Sum(c => c.Value);
       if (playerTotal == 21)
       {
-        Console.WriteLine("Black Jack! Player wins!");
         return playerTotal;
       }
       else
@@ -61,11 +60,38 @@ namespace BlackJack
       }
       return dealerHand.Sum(c => c.Value);
     }
-    public void DealerHit(List<Card> dealerHand, int dealerTotal)
+    public int DealerHit(List<Card> dealerHand, List<Card> deck, int dealerTotal)
     {
       while (dealerTotal < 17)
       {
-
+        Console.WriteLine($"Dealer hits");
+        dealerHand.Add(deck[0]);
+        dealerTotal = dealerHand.Sum(c => c.Value);
+        deck.RemoveAt(0);
+        Console.WriteLine($"Dealer drew: {dealerHand.Last().DisplayCard()} and now has a total of {dealerTotal}");
+      }
+      return dealerTotal;
+    }
+    public void CheckWinner(int dealerTotal, int playerTotal)
+    {
+      if (dealerTotal > 21)
+      {
+        Console.WriteLine($"Dealer Bust! Player Wins!");
+      }
+      else if (dealerTotal > playerTotal)
+      {
+        Console.WriteLine($"Dealer's Total is {dealerTotal} and player's total is {playerTotal}");
+        Console.WriteLine($"Dealer wins!");
+      }
+      else if (dealerTotal < playerTotal)
+      {
+        Console.WriteLine($"Dealer's Total is {dealerTotal} and player's total is {playerTotal}");
+        Console.WriteLine($"Player wins!");
+      }
+      else
+      {
+        Console.WriteLine($"Dealer's Total is {dealerTotal} and player's total is {playerTotal}");
+        Console.WriteLine($"Push! It's a tie!");
       }
     }
   }
