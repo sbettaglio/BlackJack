@@ -33,13 +33,13 @@ General Rules:
 
 Adventure Mode
 
-  [] Reveal one of the house's cards to the player when cards dealt.
+  [x] Reveal one of the house's cards to the player when cards dealt.
 
   [] Consider aces be worth one or eleven.
   
   [] Allow the player to  "Split".
   
-  [] Improve the win requirements. From Wikipedia:
+  [x] Improve the win requirements. From Wikipedia:
     Players win by not busting and having a total higher than the dealer, or not
     busting and having the dealer bust, or getting a blackjack without the
     dealer getting a blackjack. If the player and dealer have the same total

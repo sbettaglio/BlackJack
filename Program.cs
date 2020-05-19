@@ -24,8 +24,18 @@ namespace BlackJack
 
         dealerHand = dealer.DealHand(deck, dealerHand);
         playerHand = dealer.DealHand(deck, playerHand);
+        Console.WriteLine("***** Player drew *******");
+        Console.WriteLine();
         Console.WriteLine(playerHand[0].DisplayCard());
         Console.WriteLine(playerHand[1].DisplayCard());
+        Console.WriteLine();
+        Console.WriteLine("*************************");
+        Console.WriteLine();
+        Console.WriteLine("*** Dealer is showing ***");
+        Console.WriteLine();
+        Console.WriteLine(dealerHand[0].DisplayCard());
+        Console.WriteLine();
+        Console.WriteLine("*************************");
         playerTotal = playerHand.Sum(c => c.Value);
         if (playerTotal == 21)
         {
